@@ -34,9 +34,20 @@ db.employees = [
 
 
 // SET UP ROUTING
-var indexRouter = express.Router();
-indexRouter.get('/', function (req, res, next) {
-  res.status(200).send(db);
+var employeeRouter = express.Router();
+employeeRouter.get('/', function (req, res, next) {
+  if (!req.query.name) {
+    // Return employee index
+    return res.status(200).send(db.employees);
+  } else {
+    var foundEmployee = db.employees.find(function (employee) {
+      return employee.name === req.query.name;
+    });
+    // TODO Check for better status code
+    if (!foundEmployee) return res.sendStatus(404);
+
+    return res.status(200).send(foundEmployee);
+  }
 });
 
 
@@ -51,7 +62,7 @@ server.use(bodyParser.json());
 server.use(express.static(path.join(__dirname, '../client')));
 
 // API routing
-server.use('/api', indexRouter);
+server.use('/api/employee', employeeRouter);
 
 // Make server listen:
 var port = process.env.PORT || 3000;
