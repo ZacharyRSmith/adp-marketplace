@@ -1,0 +1,23 @@
+{
+  "name": "adp_marketplace",
+  "version": "1.0.0",
+  "description": "Solution to code challenge.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZacharyRSmith/adp-marketplace.git"
+  },
+  "author": "@ZacharyRSmith",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ZacharyRSmith/adp-marketplace/issues"
+  },
+  "homepage": "https://github.com/ZacharyRSmith/adp-marketplace#readme",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
+}
