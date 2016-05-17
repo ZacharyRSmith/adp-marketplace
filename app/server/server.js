@@ -60,6 +60,18 @@ employeeRouter.post('/', function (req, res, next) {
   // TODO respond with 'Location' header
   return res.sendStatus(201);
 });
+employeeRouter.put('/', function (req, res, next) {
+  var employerId = req.body.employerId;
+  var name = req.body.name;
+  var email = req.body.email || null;
+  var phoneNumber = req.body.phoneNumber || null;
+  if (!employerId || !name) return res.sendStatus(400);
+  var foundEmployee = _findEmployee(employerId, name);
+  if (!foundEmployee) return res.sendStatus(404);
+
+  _updateEmployee(foundEmployee, email, phoneNumber);
+  return res.sendStatus(200);
+});
 
 
 
@@ -98,4 +110,9 @@ function _findEmployee (employerId, name) {
   return db.employees.find(function (employee) {
     return employee.employerId === employerId && employee.name === name;
   });
+}
+
+function _updateEmployee (employee, email, phoneNumber) {
+  employee.email = email;
+  employee.phoneNumber = phoneNumber;
 }
