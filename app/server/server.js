@@ -9,20 +9,20 @@ var db = { employees: [] };
 var mockEmployee1 = {
   employerId: 1,
   name: 'Jane Doe',
-  phoneNumber: '(555) 555-0001',
-  email: 'jane.doe@example.com'
+  email: 'jane.doe@example.com',
+  phoneNumber: '(555) 555-0001'
 };
 var mockEmployee2 = {
-  employerId: 2,
+  employerId: 1,
   name: 'Jane Doe\'s Sister',
-  phoneNumber: '(555) 555-0002',
-  email: 'janes.sister@example.com'
+  email: 'janes.sister@example.com',
+  phoneNumber: '(555) 555-0002'
 };
 var mockEmployee3 = {
-  employerId: 3,
+  employerId: 1,
   name: 'Jane Doe\'s Brother',
-  phoneNumber: '(555) 555-0003',
-  email: 'janes.brother@example.com'
+  email: 'janes.brother@example.com',
+  phoneNumber: '(555) 555-0003'
 };
 db.employees = [
   mockEmployee1,
@@ -36,18 +36,29 @@ db.employees = [
 // SET UP ROUTING
 var employeeRouter = express.Router();
 employeeRouter.get('/', function (req, res, next) {
-  if (!req.query.name) {
-    // Return employee index
+  var employerId = parseInt(req.query.employerId);
+  var name = req.query.name;
+
+  if (!name && !employerId) {
     return res.status(200).send(db.employees);
   } else {
-    var foundEmployee = db.employees.find(function (employee) {
-      return employee.name === req.query.name;
-    });
-    // TODO Check for better status code
+    var foundEmployee = _findEmployee(employerId, name);
     if (!foundEmployee) return res.sendStatus(404);
 
     return res.status(200).send(foundEmployee);
   }
+});
+employeeRouter.post('/', function (req, res, next) {
+  var employerId = req.body.employerId;
+  var name = req.body.name;
+  var email = req.body.email || null;
+  var phoneNumber = req.body.phoneNumber || null;
+  if (!employerId || !name) return res.sendStatus(400);
+  if (_findEmployee(employerId, name)) return res.sendStatus(409);
+
+  _createEmployee(employerId, name, email, phoneNumber);
+  // TODO respond with 'Location' header
+  return res.sendStatus(201);
 });
 
 
@@ -68,3 +79,23 @@ server.use('/api/employee', employeeRouter);
 var port = process.env.PORT || 3000;
 server.listen(port);
 console.log('Server now listening on port %s.', port);
+
+
+
+// HELPER FUNCTIONS
+
+function _createEmployee (employerId, name, email, phoneNumber) {
+  var newEmployee = {
+    employerId: employerId,
+    name: name,
+    phoneNumber: phoneNumber,
+    email: email
+  };
+  db.employees.push(newEmployee);
+}
+
+function _findEmployee (employerId, name) {
+  return db.employees.find(function (employee) {
+    return employee.employerId === employerId && employee.name === name;
+  });
+}
