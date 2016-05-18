@@ -1,32 +1,21 @@
-var db = { employees: [] };
-// BEGIN MOCK DATA
-var mockEmployee1 = {
-  employerId: 1,
-  name: 'Jane Doe',
-  email: 'jane.doe@example.com',
-  phoneNumber: '(555) 555-0001'
-};
-var mockEmployee2 = {
-  employerId: 1,
-  name: 'Jane Doe\'s Sister',
-  email: 'janes.sister@example.com',
-  phoneNumber: '(555) 555-0002'
-};
-var mockEmployee3 = {
-  employerId: 1,
-  name: 'Jane Doe\'s Brother',
-  email: 'janes.brother@example.com',
-  phoneNumber: '(555) 555-0003'
-};
-db.employees = [
-  mockEmployee1,
-  mockEmployee2,
-  mockEmployee3
-];
-// END MOCK DATA
-
-
 const App = React.createClass({
+  getInitialState () {
+    return { employees: [] };
+  },
+
+  componentDidMount () {
+    $.ajax({
+      url: `${window.location.origin}/api/employee`,
+      dataType: 'json',
+      success: employees => {
+        this.setState({ employees });
+      },
+      error: (xhr, status, err) => {
+        alert('There was an error getting employee data. Please try refreshing the page.');
+      }
+    });
+  },
+
   handleAfterInsertRow (row) {
     row.employerId = 1;
 
@@ -48,7 +37,7 @@ const App = React.createClass({
       <div>What a Reaction!</div>
 
       <BootstrapTable
-        data={db.employees}
+        data={this.state.employees}
         pagination={true}
         insertRow={true}
         options={{
