@@ -6,7 +6,13 @@ var employeeController = require('../controllers/employee_controller');
 
 var employeeRouter = express.Router();
 
-employeeRouter.get('/', employeeController.get);
+employeeRouter.get('/', function (req, res, next) {
+  if (req.query.name) {
+    employeeController.show(req, res, next);
+  } else {
+    employeeController.index(req, res, next);
+  }
+});
 
 employeeRouter.post('/', employeeController.create);
 

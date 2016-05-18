@@ -55,18 +55,17 @@ module.exports = {
     return res.sendStatus(200);
   },
 
-  get: function (req, res, next) {
+  index: function (req, res, next) {
+    return res.status(200).send(db.employees);
+  },
+
+  show: function (req, res, next) {
     var employerId = parseInt(req.query.employerId);
     var name = req.query.name;
+    var foundEmployee = _getEmployee(employerId, name);
+    if (!foundEmployee) return res.sendStatus(404);
 
-    if (!name && !employerId) {
-      return res.status(200).send(db.employees);
-    } else {
-      var foundEmployee = _getEmployee(employerId, name);
-      if (!foundEmployee) return res.sendStatus(404);
-
-      return res.status(200).send(foundEmployee);
-    }
+    return res.status(200).send(foundEmployee);
   },
 
   update: function (req, res, next) {
