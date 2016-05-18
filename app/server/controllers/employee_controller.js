@@ -45,13 +45,13 @@ module.exports = {
 
   destroy: function (req, res, next) {
     var employerId = req.body.employerId;
-    var name = req.body.name;
+    var employeeNames = req.body.employeeNames;
+    if (!employerId || !Array.isArray(employeeNames)) return res.sendStatus(400);
+    if (!employeeNames.every(function (name) {
+      return _getEmployee(employerId, name);
+    })) return res.sendStatus(404);
 
-    if (!employerId || !name) return res.sendStatus(400);
-    var foundEmployee = _getEmployee(employerId, name);
-    if (!foundEmployee) return res.sendStatus(404);
-
-    _deleteEmployee(foundEmployee);
+    employeeNames.forEach(function (name) { _deleteEmployee(employerId, name); });
     return res.sendStatus(200);
   },
 
@@ -98,9 +98,9 @@ function _createEmployee (employerId, name, email, phoneNumber) {
   db.employees.push(newEmployee);
 }
 
-function _deleteEmployee (employee) {
+function _deleteEmployee (employerId, name) {
   var foundIndex = db.employees.findIndex(function (e) {
-    return e.employerId === employee.employerId && e.name === employee.name;
+    return e.employerId === employerId && e.name === name;
   });
   db.employees.splice(foundIndex, 1);
 }

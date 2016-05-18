@@ -12,6 +12,24 @@ const App = React.createClass({
       });
   },
 
+  handleAfterDeleteRow (rowKeys) {
+    const data = {
+      employerId: 1,
+      employeeNames: rowKeys
+    };
+
+    $.ajax({
+      type: 'DELETE',
+      url: `${window.location.origin}/api/employee`,
+      data: JSON.stringify(data),
+      contentType: 'application/json; charset=UTF-8'
+    })
+      .fail(() => {
+        alert('There was an error deleting employee data. ' +
+          'What you see might not reflect what is currently in the database.');
+      });
+  },
+
   handleAfterInsertRow (row) {
     row.employerId = 1;
 
@@ -19,13 +37,26 @@ const App = React.createClass({
       type: 'POST',
       url: `${window.location.origin}/api/employee`,
       data: JSON.stringify(row),
-      contentType: 'application/json; charset=UTF-8',
-      error: (xhr, status, err) => {
+      contentType: 'application/json; charset=UTF-8'
+    })
+      .fail(() => {
         alert(`Oh noz!! There was an error creating that employee. ` +
           `Please note that while they show up on this page, ` +
-          `they do not exist in the database! : /`);
-       }
-    });
+          `they do not exist in the database! : (`);
+      });
+  },
+
+  handleAfterSaveCell (row, cellName, cellValue) {
+    $.ajax({
+      type: 'PUT',
+      url: `${window.location.origin}/api/employee`,
+      data: JSON.stringify(row),
+      contentType: 'application/json; charset=UTF-8'
+    })
+      .fail(() => {
+        alert('There was an error editing employee data. ' +
+          'What you see might not reflect what is currently in the database.');
+      });
   },
 
   render () {
@@ -33,10 +64,14 @@ const App = React.createClass({
       <div>What a Reaction!</div>
 
       <BootstrapTable
+        cellEdit={{ afterSaveCell: this.handleAfterSaveCell, mode: "dbclick" }}
         data={this.state.employees}
-        pagination={true}
+        deleteRow={true}
         insertRow={true}
+        pagination={true}
+        selectRow={{ mode: "checkbox" }}
         options={{
+          afterDeleteRow: this.handleAfterDeleteRow,
           afterInsertRow: this.handleAfterInsertRow
         }}>
         <TableHeaderColumn dataField="name" isKey={true}>
