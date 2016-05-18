@@ -27,11 +27,33 @@ db.employees = [
 
 
 const App = React.createClass({
-  render() {
+  handleAfterInsertRow (row) {
+    row.employerId = 1;
+
+    $.ajax({
+      type: 'POST',
+      url: `${window.location.origin}/api/employee`,
+      data: JSON.stringify(row),
+      contentType: 'application/json; charset=UTF-8',
+      error: (xhr, status, err) => {
+        alert(`Oh noz!! There was an error creating that employee. ` +
+          `Please note that while they show up on this page, ` +
+          `they do not exist in the database! : /`);
+       }
+    });
+  },
+
+  render () {
     return (<div>
       <div>What a Reaction!</div>
 
-      <BootstrapTable data={db.employees}>
+      <BootstrapTable
+        data={db.employees}
+        pagination={true}
+        insertRow={true}
+        options={{
+          afterInsertRow: this.handleAfterInsertRow
+        }}>
         <TableHeaderColumn dataField="name" isKey={true}>
           Name
         </TableHeaderColumn>
