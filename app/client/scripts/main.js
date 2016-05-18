@@ -4,16 +4,12 @@ const App = React.createClass({
   },
 
   componentDidMount () {
-    $.ajax({
-      url: `${window.location.origin}/api/employee`,
-      dataType: 'json',
-      success: employees => {
-        this.setState({ employees });
-      },
-      error: (xhr, status, err) => {
+    $.get(`${window.location.origin}/api/employee`, employees => {
+      this.setState({ employees });
+    })
+      .fail(() => {
         alert('There was an error getting employee data. Please try refreshing the page.');
-      }
-    });
+      });
   },
 
   handleAfterInsertRow (row) {
