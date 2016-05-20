@@ -85,6 +85,20 @@ const App = React.createClass({
     this.setState({ email: e.target.value });
   },
 
+  handleInstructionsClick (e) {
+    e.preventDefault();
+    alert(`
+      Welcome! ( :
+
+      Please login with the credentials provided to you by admin.
+
+      - Add new employees by clicking on 'New'
+
+      - Edit employees by double-clicking their email or phone number cell, changing info, then pressing enter
+
+      - Delete employees by selecting their rows and clicking 'Delete'`);
+  },
+
   handlePasswordChange (e) {
     this.setState({ password: e.target.value });
   },
@@ -95,43 +109,60 @@ const App = React.createClass({
         <nav className="navbar navbar-inverse navbar-fixed-top">
           <div className="container-fluid">
             <div className="navbar-header">
+              <button
+                className="navbar-toggle collapsed"
+                data-toggle="collapse"
+                data-target=".navbar-collapse"
+              >
+                <span className="sr-only">Toggle navigation</span>
+                <span className="icon-bar"></span>
+                <span className="icon-bar"></span>
+                <span className="icon-bar"></span>
+              </button>
               <a href="#" className="navbar-brand">Kontact</a>
             </div>
 
-            <ul className="nav navbar-nav navbar-right">
-              <li>
-                <a href="#" className="dropdown-toggle" data-toggle="dropdown">
-                  Login<span className="caret"></span>
-                </a>
-                <ul className="dropdown-menu">
-                  <form className="form" onSubmit={this.handleAuthSubmit}>
-                    <div className="form-group">
+            <div className="collapse navbar-collapse">
+              <ul className="nav navbar-nav navbar-right">
+                <li>
+                  <a href="#" onClick={this.handleInstructionsClick}>Instructions</a>
+                </li>
+                <li>
+                  <a href="#" className="dropdown-toggle" data-toggle="dropdown">
+                    Login<span className="caret"></span>
+                  </a>
+                  <ul className="dropdown-menu">
+                    <form className="form" onSubmit={this.handleAuthSubmit}>
+                      <div className="form-group">
+                        <input
+                          className="btn-block"
+                          id="email"
+                          type="text"
+                          placeholder="Email"
+                          value={this.state.email}
+                          onChange={this.handleEmailChange}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <input
+                          className="btn-block"
+                          id="password"
+                          type="password"
+                          placeholder="Password"
+                          value={this.state.password}
+                          onChange={this.handlePasswordChange}
+                        />
+                      </div>
                       <input
-                        id="email"
-                        type="text"
-                        placeholder="Email"
-                        value={this.state.email}
-                        onChange={this.handleEmailChange}
+                        className="btn btn-primary btn-block"
+                        type="submit"
+                        value="Log in"
                       />
-                    </div>
-                    <div className="form-group">
-                      <input
-                        id="password"
-                        type="password"
-                        placeholder="Password"
-                        value={this.state.password}
-                        onChange={this.handlePasswordChange}
-                      />
-                    </div>
-                    <input
-                      className="btn btn-primary btn-block"
-                      type="submit"
-                      value="Log in"
-                    />
-                  </form>
-                </ul>
-              </li>
-            </ul>
+                    </form>
+                  </ul>
+                </li>
+              </ul>
+            </div>
           </div>
         </nav>
       </header>
