@@ -12,11 +12,18 @@ var server = express();
 // Server config:
 server.use(bodyParser.json());
 
+server.use(function (req, res, next) {
+  res.setHeader('Cache-Control', 'no-cache');
+  next();
+});
+
 // Client
 server.use(express.static(path.join(__dirname, '../client')));
 
 // API routing
 server.use('/api/employee', employeeRouter);
+
+
 
 // Make server listen:
 var port = process.env.PORT || 3000;
