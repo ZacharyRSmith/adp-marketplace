@@ -23,6 +23,24 @@ From within the root directory:
 npm install
 ```
 
+## Tests
+
+> Some tests to do by hand
+
+From API:
+
+- Create employee
+- Read employee
+- Update employee
+- Delete employee
+
+From UI:
+
+- Create employee
+- Read employee
+- Update employee
+- Delete employee
+
 ## Notes
 
 ### Data schema
