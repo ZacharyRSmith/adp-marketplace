@@ -1,10 +1,114 @@
+const LoginForm = React.createClass({
+  getInitialState () {
+    return { email: '', password: '' };
+  },
+
+  handleChangeOnEmail (e) {
+    this.setState({ email: e.target.value });
+  },
+
+  handleChangeOnPassword (e) {
+    this.setState({ password: e.target.value });
+  },
+
+  onSubmitOfAuth (e) {
+    e.preventDefault();
+    const email = this.state.email.trim();
+    const password = this.state.password.trim();
+    if (!email || !password) return;
+
+    this.props.onSubmitOfAuth({ email, password });
+    this.setState({ email: '', password: '' });
+  },
+
+  render () {
+    return (<form className="form" onSubmit={this.onSubmitOfAuth}>
+      <div className="form-group">
+        <input
+          className="btn-block"
+          id="email"
+          type="text"
+          placeholder="Email"
+          value={this.state.email}
+          onChange={this.handleChangeOnEmail}
+        />
+      </div>
+      <div className="form-group">
+        <input
+          className="btn-block"
+          id="password"
+          type="password"
+          placeholder="Password"
+          value={this.state.password}
+          onChange={this.handleChangeOnPassword}
+        />
+      </div>
+      <input
+        className="btn btn-primary btn-block"
+        type="submit"
+        value="Log in"
+      />
+    </form>);
+  }
+});
+
+const NavBar = React.createClass({
+  handleClickOnInstructions (e) {
+    e.preventDefault();
+    alert(`
+      Welcome! ( :
+
+      Please login with the credentials provided to you by admin.
+
+      - Add new employees by clicking on 'New'
+
+      - Edit employees by double-clicking their email or phone number cell, changing info, then pressing enter
+
+      - Delete employees by selecting their rows and clicking 'Delete'`);
+  },
+
+  render () {
+    return(<nav className="navbar navbar-inverse navbar-fixed-top">
+      <div className="container-fluid">
+        <div className="navbar-header">
+          <button
+            className="navbar-toggle collapsed"
+            data-toggle="collapse"
+            data-target=".navbar-collapse"
+          >
+            <span className="sr-only">Toggle navigation</span>
+            <span className="icon-bar"></span>
+            <span className="icon-bar"></span>
+            <span className="icon-bar"></span>
+          </button>
+          <a href="#" className="navbar-brand">Kontact</a>
+        </div>
+
+        <div className="collapse navbar-collapse">
+          <ul className="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" onClick={this.handleClickOnInstructions}>Instructions</a>
+            </li>
+            <li>
+              <a href="#" className="dropdown-toggle" data-toggle="dropdown">
+                Login<span className="caret"></span>
+              </a>
+              <ul className="dropdown-menu">
+                <LoginForm onSubmitOfAuth={this.props.handleSubmitOfAuth} />
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>);
+  }
+});
+
 const App = React.createClass({
   getInitialState () {
     return {
-      email: '',
       employees: [],
       employerId: null,
-      password: ''
     };
   },
 
@@ -59,12 +163,7 @@ const App = React.createClass({
       });
   },
 
-  handleAuthSubmit (e) {
-    e.preventDefault();
-    const email = this.state.email.trim();
-    const password = this.state.password.trim();
-    if (!email || !password) return;
-
+  handleSubmitOfAuth ({ email, password }) {
     $.ajax({
       type: 'POST',
       url: `${window.location.origin}/api/employee/auth`,
@@ -78,93 +177,12 @@ const App = React.createClass({
         this.setState({ employees: [] });
         alert('There was an error with authentication! D :');
       });
-    this.setState({ email: '', password: '' });
-  },
-
-  handleEmailChange (e) {
-    this.setState({ email: e.target.value });
-  },
-
-  handleInstructionsClick (e) {
-    e.preventDefault();
-    alert(`
-      Welcome! ( :
-
-      Please login with the credentials provided to you by admin.
-
-      - Add new employees by clicking on 'New'
-
-      - Edit employees by double-clicking their email or phone number cell, changing info, then pressing enter
-
-      - Delete employees by selecting their rows and clicking 'Delete'`);
-  },
-
-  handlePasswordChange (e) {
-    this.setState({ password: e.target.value });
   },
 
   render () {
     return (<div>
       <header>
-        <nav className="navbar navbar-inverse navbar-fixed-top">
-          <div className="container-fluid">
-            <div className="navbar-header">
-              <button
-                className="navbar-toggle collapsed"
-                data-toggle="collapse"
-                data-target=".navbar-collapse"
-              >
-                <span className="sr-only">Toggle navigation</span>
-                <span className="icon-bar"></span>
-                <span className="icon-bar"></span>
-                <span className="icon-bar"></span>
-              </button>
-              <a href="#" className="navbar-brand">Kontact</a>
-            </div>
-
-            <div className="collapse navbar-collapse">
-              <ul className="nav navbar-nav navbar-right">
-                <li>
-                  <a href="#" onClick={this.handleInstructionsClick}>Instructions</a>
-                </li>
-                <li>
-                  <a href="#" className="dropdown-toggle" data-toggle="dropdown">
-                    Login<span className="caret"></span>
-                  </a>
-                  <ul className="dropdown-menu">
-                    <form className="form" onSubmit={this.handleAuthSubmit}>
-                      <div className="form-group">
-                        <input
-                          className="btn-block"
-                          id="email"
-                          type="text"
-                          placeholder="Email"
-                          value={this.state.email}
-                          onChange={this.handleEmailChange}
-                        />
-                      </div>
-                      <div className="form-group">
-                        <input
-                          className="btn-block"
-                          id="password"
-                          type="password"
-                          placeholder="Password"
-                          value={this.state.password}
-                          onChange={this.handlePasswordChange}
-                        />
-                      </div>
-                      <input
-                        className="btn btn-primary btn-block"
-                        type="submit"
-                        value="Log in"
-                      />
-                    </form>
-                  </ul>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </nav>
+        <NavBar handleSubmitOfAuth={this.handleSubmitOfAuth} />
       </header>
 
       <BootstrapTable
