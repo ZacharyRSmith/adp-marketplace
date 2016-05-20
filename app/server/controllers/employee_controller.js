@@ -1,4 +1,12 @@
-var db = { employees: [] };
+var db = { employees: [], employers: [{
+  // empty employer object so first employerId is 1
+}, {
+  email: 'user1@example.com',
+  password: 'password'
+}, {
+  email: 'user2@example.com',
+  password: 'password'
+}] };
 // BEGIN MOCK DATA
 var mockEmployee1 = {
   employerId: 1,
@@ -18,16 +26,49 @@ var mockEmployee3 = {
   email: 'janes.brother@example.com',
   phoneNumber: '(555) 555-0003'
 };
+var mockEmployee4 = {
+  employerId: 2,
+  name: 'John Doe',
+  email: 'john.doe@example.com',
+  phoneNumber: '(555) 555-0004'
+};
+var mockEmployee5 = {
+  employerId: 2,
+  name: 'John Doe\'s Sister',
+  email: 'johns.sister@example.com',
+  phoneNumber: '(555) 555-0005'
+};
+var mockEmployee6 = {
+  employerId: 2,
+  name: 'John Doe\'s Brother',
+  email: 'johns.brother@example.com',
+  phoneNumber: '(555) 555-0006'
+};
 db.employees = [
   mockEmployee1,
   mockEmployee2,
-  mockEmployee3
+  mockEmployee3,
+  mockEmployee4,
+  mockEmployee5,
+  mockEmployee6
 ];
 // END MOCK DATA
 
 
 
 module.exports = {
+
+  auth: function (req, res, next) {
+    var email = req.body.email;
+    var password = req.body.password;
+    if (!email || !password) return res.sendStatus(400);
+    var employerId = _getEmployerId(email, password);
+    if (employerId === -1) return res.sendStatus(404);
+
+    return res.status(200).send(db.employees.filter(function (employee) {
+      return employee.employerId === employerId;
+    }));
+  },
 
   create: function (req, res, next) {
     var employerId = req.body.employerId;
@@ -107,6 +148,12 @@ function _deleteEmployee (employerId, name) {
 function _getEmployee (employerId, name) {
   return db.employees.find(function (employee) {
     return employee.employerId === employerId && employee.name === name;
+  });
+}
+
+function _getEmployerId (email, password) {
+  return db.employers.findIndex(function (employer) {
+    return employer.email === email && employer.password === password;
   });
 }
 

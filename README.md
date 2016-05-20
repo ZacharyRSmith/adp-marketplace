@@ -1,6 +1,15 @@
 # ADP Marketplace
 
-> My solution to a coding challenge from ADP Marketplace. The instructions are purposefully not shown.
+> My solution to a coding challenge from ADP Marketplace.
+
+> The instructions are purposefully not shown.
+
+> Employers cannot be created from UI or API. Two test users exist, with emails:
+
+- 'user1@example.com'
+- 'user2@example.com'
+
+each with password: 'password'.
 
 ## Usage
 

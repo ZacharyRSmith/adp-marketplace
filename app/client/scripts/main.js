@@ -1,15 +1,10 @@
 const App = React.createClass({
   getInitialState () {
-    return { employees: [] };
-  },
-
-  componentDidMount () {
-    $.get(`${window.location.origin}/api/employee`, employees => {
-      this.setState({ employees });
-    })
-      .fail(() => {
-        alert('There was an error getting employee data. Please try refreshing the page.');
-      });
+    return {
+      email: '',
+      employees: [],
+      password: ''
+    };
   },
 
   handleAfterDeleteRow (rowKeys) {
@@ -59,9 +54,82 @@ const App = React.createClass({
       });
   },
 
+  handleAuthSubmit (e) {
+    e.preventDefault();
+    const email = this.state.email.trim();
+    const password = this.state.password.trim();
+    if (!email || !password) return;
+
+    $.ajax({
+      type: 'POST',
+      url: `${window.location.origin}/api/employee/auth`,
+      data: JSON.stringify({ email, password }),
+      contentType: 'application/json; charset=UTF-8'
+    })
+      .done((employees) => {
+        this.setState({ employees });
+      })
+      .fail(() => {
+        this.setState({ employees: [] });
+        alert('There was an error with authentication! D :');
+      });
+    this.setState({ email: '', password: '' });
+  },
+
+  handleEmailChange (e) {
+    this.setState({ email: e.target.value });
+  },
+
+  handlePasswordChange (e) {
+    this.setState({ password: e.target.value });
+  },
+
   render () {
     return (<div>
-      <div>What a Reaction!</div>
+      <header>
+        <nav className="navbar navbar-inverse navbar-fixed-top">
+          <div className="container-fluid">
+            <div className="navbar-header">
+              <a href="#" className="navbar-brand">Kontact</a>
+            </div>
+
+            <ul className="nav navbar-nav navbar-right">
+              <li>
+                <a href="#" className="dropdown-toggle" data-toggle="dropdown">
+                  Login<span className="caret"></span>
+                </a>
+                <ul className="dropdown-menu">
+                  <form className="form" onSubmit={this.handleAuthSubmit}>
+                    <div className="form-group">
+                      <input
+                        id="email"
+                        type="text"
+                        placeholder="Email"
+                        value={this.state.email}
+                        onChange={this.handleEmailChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <input
+                        id="password"
+                        type="password"
+                        placeholder="Password"
+                        value={this.state.password}
+                        onChange={this.handlePasswordChange}
+                      />
+                    </div>
+                    <input
+                      className="btn btn-primary btn-block"
+                      type="submit"
+                      value="Log in"
+                    />
+                  </form>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </header>
 
       <BootstrapTable
         cellEdit={{ afterSaveCell: this.handleAfterSaveCell, mode: "dbclick" }}

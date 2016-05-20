@@ -1,0 +1,10 @@
+body {
+  font-family: 'Roboto Condensed', sans-serif;
+  padding-top: 80px;
+}
+.navbar-header {
+  position: absolute; /* prevent logo from push navbar-right down */
+}
+.navbar-right {
+  text-align: right;
+}

@@ -20,6 +20,7 @@ employeeRouter.put('/', employeeController.update);
 
 employeeRouter.delete('/', employeeController.destroy);
 
+employeeRouter.post('/auth', employeeController.auth);
 
 
 module.exports = employeeRouter;
