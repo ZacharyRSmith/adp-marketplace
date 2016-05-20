@@ -65,9 +65,14 @@ module.exports = {
     var employerId = _getEmployerId(email, password);
     if (employerId === -1) return res.sendStatus(404);
 
-    return res.status(200).send(db.employees.filter(function (employee) {
+    var employersEmployees = db.employees.filter(function (employee) {
       return employee.employerId === employerId;
-    }));
+    });
+
+    return res.status(200).send({
+      employees: employersEmployees,
+      employerId: employerId
+    });
   },
 
   create: function (req, res, next) {

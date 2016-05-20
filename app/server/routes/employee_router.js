@@ -8,9 +8,9 @@ var employeeRouter = express.Router();
 
 employeeRouter.get('/', function (req, res, next) {
   if (req.query.name) {
-    employeeController.show(req, res, next);
+    return employeeController.show(req, res, next);
   } else {
-    employeeController.index(req, res, next);
+    return employeeController.index(req, res, next);
   }
 });
 

@@ -3,13 +3,15 @@ const App = React.createClass({
     return {
       email: '',
       employees: [],
+      employerId: null,
       password: ''
     };
   },
 
   handleAfterDeleteRow (rowKeys) {
+    if (!this.state.employerId) return alert('No signed-in employer found! This data will not persist.');
     const data = {
-      employerId: 1,
+      employerId: this.state.employerId,
       employeeNames: rowKeys
     };
 
@@ -26,7 +28,8 @@ const App = React.createClass({
   },
 
   handleAfterInsertRow (row) {
-    row.employerId = 1;
+    if (!this.state.employerId) return alert('No signed-in employer found! This data will not persist.');
+    row.employerId = this.state.employerId;
 
     $.ajax({
       type: 'POST',
@@ -42,6 +45,8 @@ const App = React.createClass({
   },
 
   handleAfterSaveCell (row, cellName, cellValue) {
+    if (!this.state.employerId) return alert('No signed-in employer found! This data will not persist.');
+
     $.ajax({
       type: 'PUT',
       url: `${window.location.origin}/api/employee`,
@@ -66,8 +71,8 @@ const App = React.createClass({
       data: JSON.stringify({ email, password }),
       contentType: 'application/json; charset=UTF-8'
     })
-      .done((employees) => {
-        this.setState({ employees });
+      .done(({ employees, employerId }) => {
+        this.setState({ employees, employerId });
       })
       .fail(() => {
         this.setState({ employees: [] });
